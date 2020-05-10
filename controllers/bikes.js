@@ -49,7 +49,11 @@ const updateBike = asyncHandler(async (req, res) => {
             new ErrorResponse('Product not found.', 404)
         )
     }
-    res.status(200).send(updatedProduct)
+    setTimeout(() => {
+        res.status(200).send(updatedProduct)
+    },
+    2000
+    )
 })
 
 const deleteBike = asyncHandler(

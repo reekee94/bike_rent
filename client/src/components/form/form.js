@@ -8,22 +8,22 @@ const ApiService = new Service()
 const bike_data = {
     name: '',
     category: '',
-    price: undefined
+    price: ''
 }
-const ItemAddForm = () => {
+const ItemAddForm = (props) => {
 
     let [newBike, setNewBike] = useState(bike_data)
 
 
     const handleChange = (event) => {
-        console.log(event.target.value)
         event.persist();
         setNewBike(bike_data => ({ ...bike_data, [event.target.name]: event.target.value }));
     };
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
-        ApiService.postBike(newBike);
+        await props.addNewBike(newBike);
+        setNewBike(bike_data)
     };
         return (
             <span>
@@ -54,7 +54,7 @@ const ItemAddForm = () => {
                    <div className="form-group">
                         <label>Bike price</label>
                         <input type="text"
-                        name='price'
+                            name='price'
                            className="form-control "
                            value={newBike.price}
                            onChange={handleChange}

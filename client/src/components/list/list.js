@@ -8,7 +8,6 @@ const List = ({ data, available, onToggleRent, onDelete }) => {
 
     const elements = data.map((item) => {
         const { id, ...itemProps } = item;
-        console.log(item);
         return (
             <div key={id} className="">
                 <AvailableItem

@@ -14,13 +14,14 @@ export default class ApiService {
 
     deleteData = async (url) => {
         const res = await fetch(`${this._apiBase}${url}`, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
             method: 'DELETE'
         });
         if (!res.ok) {
-            throw new Error(`Could not fetch ${url} +
-                , received ${res.status}`);
+            throw new Error(`Could not fetch ${url}, received ${res.status}`);
         }
-        return await res.json();
     }
 
     postData = async (url, data) => {
@@ -35,7 +36,22 @@ export default class ApiService {
             throw new Error(`Could not fetch ${url}` +
                 `, received ${res.status}`)
         }
-        return await res.json();
+        return res.json();
+    }
+
+    updateData = async (url, data) => {
+        const res = await fetch(`${this._apiBase}${url}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+        });
+        if (!res.ok) {
+            throw new Error(`Could not fetch ${url} +
+                , received ${res.status}`);
+        }
+        return res.json();
     }
 
     getAllBikes = async () => {
@@ -57,5 +73,10 @@ export default class ApiService {
         const res = await this.deleteData(`/bike/${id}/`);
         return res
     };
+
+    updateBike = async (id, data) => {
+        const res = await this.updateBike(`/bike/${id}/`, data);
+        return res;
+    }
 };
 

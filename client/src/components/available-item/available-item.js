@@ -8,11 +8,11 @@ const AvailableItem = ({ name, category, price, available, onToggleRent, onDelet
 
         <button type="button"
             className="btn-primary"
-            onClick={() => onToggleRent(_id)}> Rent </button>
+            onClick={() => onToggleRent(_id, available)}> Rent </button>
 
-      <button type="button"
+        <button type="button"
             className="btn-danger"
-            onClick={() => onDelete(_id)}> Delete </button>
+            onClick={() => onDelete(_id, available)}> Delete </button>
     </span>
     );
 };
