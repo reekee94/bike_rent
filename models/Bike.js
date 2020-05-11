@@ -14,7 +14,8 @@ const schema = new Schema({
         required: true,
         min: 0
     },
-    available: Boolean
+    available: Boolean,
+    rentStarted: Number
 })
 
 module.exports = model( 'Bike', schema)

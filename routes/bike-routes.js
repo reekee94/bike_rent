@@ -1,6 +1,6 @@
 const express = require('express')
-const { productValidationRules, validate } = require('../middleware/validation');
-const BikeController = require('../controllers/bikes')
+const { productValidationRules, validate } = require('../middleware/validation')
+const BikeController = require('../controllers/bikes-controllers')
 
 
 const router = express.Router()
@@ -13,10 +13,9 @@ router.route('/')
 
 router.route('/:id')
     .get( BikeController.getBike)
+    // тут було просто апдейт байк
     .put( BikeController.updateBike )
     .delete( BikeController.deleteBike )
-
-
 
 
 module.exports = router

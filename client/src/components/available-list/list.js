@@ -1,7 +1,7 @@
 import React from 'react';
 import Emoji from "../emoji/emoji";
 
-import AvailableItem from '../available-item/available-item';
+import Item from '../available-item/item';
 
 
 const AvailableList = ({ bikes, onToggleRent, onDelete }) => {
@@ -10,7 +10,7 @@ const AvailableList = ({ bikes, onToggleRent, onDelete }) => {
         const { id, ...itemProps } = item;
         return (
             <div key={id} className="">
-                <AvailableItem
+                <Item
                     { ...itemProps }
                     onToggleRent={ () => onToggleRent(id) }
                     onDelete={ () => onDelete(id) } />

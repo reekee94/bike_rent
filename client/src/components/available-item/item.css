@@ -1,0 +1,5 @@
+.item-span{
+    display: flex;
+    justify-content: space-between;
+    background-color: #e7ebec;
+}

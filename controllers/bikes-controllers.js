@@ -41,7 +41,8 @@ const createBike = asyncHandler(async (req, res) => {
 const updateBike = asyncHandler(async (req, res) => {
     const { id } = req.params
     const product  = req.body
-    const updatedProduct = await modelBikes.findByIdAndUpdate(id, product,{
+    const validStartDate = {rentStarted: Date.now(), ...product}
+    const updatedProduct = await modelBikes.findByIdAndUpdate(id, validStartDate,{
         returnOriginal: false
     })
     if (!updatedProduct) {
@@ -58,7 +59,6 @@ const updateBike = asyncHandler(async (req, res) => {
 
 const deleteBike = asyncHandler(
     async (req, res) => {
-        console.log(req)
         const { id } = req.params;
         const deletedProduct = await modelBikes.findByIdAndDelete({ _id: id });
         if (!deletedProduct) {
@@ -69,10 +69,59 @@ const deleteBike = asyncHandler(
         res.status(200).send(`Product ${deletedProduct.title} successfully deleted!`);
     })
 
+const rentBike = asyncHandler(async (req, res) => {
+    const { id } = req.params
+    const product  = {
+        available: false,
+        rentStarted: Date.now()
+    }
+    const updatedProduct = await modelBikes.findByIdAndUpdate(id, product,{
+        returnOriginal: false
+    })
+    if (!updatedProduct) {
+        return next(
+            new ErrorResponse('Product not found.', 404)
+        )
+    }
+    res.status(200).send(updatedProduct)
+})
+
+const rentPrice = asyncHandler(async (req, res) => {
+    const { id } = req.params
+    const product = await modelBikes.findById(id)
+    if (!product) {
+        return next(
+            new ErrorResponse('Product not found.', 404)
+        )
+    }
+    const dateEnd = Date.now()
+    const hoursRented = Math.ceil((dateEnd - product.rentStarted) / 3600000 % 24)
+    const bill = hoursRented * product.price
+    res.status(200).send(`${bill}`)
+})
+
+const getAllRentedBikesSum = asyncHandler(async (req, res) => {
+    const allBikes = await modelBikes.find()
+    const rentedBikes = allBikes.filter(item => !item.available)
+    const dateEnd = Date.now()
+    const currentSumForRent = rentedBikes
+        .map(item => item.price * Math.ceil((dateEnd - item.rentStarted) / 3600000 % 24))
+        .reduce((prev, curr) => prev + curr, 0);
+    if (!currentSumForRent) {
+        return next(
+            new ErrorResponse('Product not found.', 404)
+        )
+    }
+    res.status(200).send(`${currentSumForRent}`)
+})
+
 module.exports = {
     getBike,
     getBikes,
     deleteBike,
     updateBike,
-    createBike
+    createBike,
+    rentBike,
+    rentPrice,
+    getAllRentedBikesSum
 }

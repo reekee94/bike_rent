@@ -4,7 +4,8 @@ const morgan = require('morgan')
 const cors = require('cors')
 require('dotenv').config()
 
-const bike = require('./routes/bikes_try')
+const bike = require('./routes/bike-routes')
+const rent = require('./routes/rent-routes')
 
 const server = express()
 connectDB()
@@ -16,6 +17,7 @@ server.use(express.json({ extended: false }))
 server.get('/', (req, res) => res.send('API Running'))
 
 server.use('/bike', bike )
+server.use('/rent', rent )
 
 const PORT = process.env.PORT || 5000
 

@@ -1,37 +1,62 @@
-import React, {useState} from 'react';
-import Service from "../../services/api-service";
-import Emoji from "../emoji/emoji";
+import React, { useState, useEffect, useRef } from 'react'
+import Emoji from "../emoji/emoji"
+import './form.css'
 
-
-const ApiService = new Service()
 
 const bike_data = {
     name: '',
-    category: '',
+    category: 'Custom',
     price: ''
 }
 const ItemAddForm = (props) => {
+    const firstRender = useRef(true)
+    const [disable, setDisabled] = useState(true)
+    const [nameError, setNameError] = useState(null)
+    const [newBike, setNewBike] = useState(bike_data)
 
-    let [newBike, setNewBike] = useState(bike_data)
+    useEffect(() => {
+        if (firstRender.current) {
+            firstRender.current = false
+            return
+        }
+        setDisabled(formValidation())
 
+    }, [newBike])
+
+    const formValidation = () => {
+        const rePrice = /^([0-9]{0,2}((.)[0-9]{0,2}))$/gm
+        const reName = /[A-Z][a-zA-Z][^#&<>\"~;$^%{}?]{1,32}$/g
+        if (!rePrice.test(newBike.price)) {
+            setNameError('Not a valid price')
+            return true
+        } else if (!reName.test(newBike.name)) {
+            setNameError('Name can be min 3 and max 32 symbols')
+            return true
+        } else {
+            setNameError(null)
+            return false
+        }
+    }
 
     const handleChange = (event) => {
-        event.persist();
-        setNewBike(bike_data => ({ ...bike_data, [event.target.name]: event.target.value }));
-    };
+        event.persist()
+        setNewBike(bike_data => ({ ...bike_data, [event.target.name]: event.target.value }))
+        console.log(newBike)
+    }
 
     const onSubmit = async (e) => {
-        e.preventDefault();
-        await props.addNewBike(newBike);
+        e.preventDefault()
+        await props.addNewBike(newBike)
         setNewBike(bike_data)
-    };
+    }
         return (
             <span>
-                <h3>  <Emoji symbol='🤑' />Create new rent </h3>
+                <h5>  <Emoji symbol='🤑' />Create new rent </h5>
+                { nameError && <p>{nameError}</p> }
                 <form
-                    className="bottom-panel d-flex"
+                    className="form"
                     onSubmit={onSubmit}>
-                    <div className="form-group">
+                    <div className="">
                         <label>Bike name</label>
                         <input type="text"
                             name='name'
@@ -40,18 +65,22 @@ const ItemAddForm = (props) => {
                             onChange={handleChange}
                             placeholder="Name" />
                     </div>
-
-                    <div className="form-group">
+                    <div className="">
                         <label>Bike type</label>
-                        <input type="text"
-                            name='category'
-                            className="form-control "
-                            value={newBike.category}
-                            onChange={handleChange}
-                            placeholder="Type" />
+                        <select name="category"
+                                className="form-control"
+                                onChange={handleChange}
+                                placeholder="Type"
+                                value={newBike.category}>
+                            <option selected>Custom</option>
+                            <option>Road</option>
+                            <option>Mountain</option>
+                            <option>Speed</option>
+                        </select>
+
                    </div>
 
-                   <div className="form-group">
+                   <div className="">
                         <label>Bike price</label>
                         <input type="text"
                             name='price'
@@ -61,8 +90,9 @@ const ItemAddForm = (props) => {
                            placeholder="Price" />
                    </div>
 
-                    <button type="submit"
-                            className="btn btn-success">Add</button>
+                <button type="submit"
+                        disabled={disable}
+                        className="button-form btn btn-success">Submit rent</button>
                 </form>
             </span>
         )
